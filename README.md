@@ -11,7 +11,7 @@
 ## Features
 
 - **Store connectors** for Shopify and WooCommerce.
-- **11 MCP tools** covering inventory, pricing, customers, orders, product performance and reporting.
+- **12 MCP tools** covering inventory, pricing, customers, orders, product performance and reporting.
 - **4 MCP resources** exposing store overview, inventory, recent orders and top customers.
 - Inventory forecasting using moving-average demand plus safety-stock calculation.
 - RFM-based customer segmentation (7 distinct segments).
@@ -21,7 +21,7 @@
 - Automated daily and weekly reports.
 - Dual transport: local `stdio` and Streamable HTTP (MCPize).
 - TypeScript, `@modelcontextprotocol/sdk` v1.29+, Zod v4.
-- Free tier, plus $25 and $45 paid plans.
+- Free tier, plus a €29 lifetime Pro license.
 
 ---
 
@@ -49,7 +49,8 @@ The server will read the environment variables, connect to the configured store(
 
 | Tool | Description |
 |------|-------------|
-| `store_connect` | Establishes a connection to a Shopify or WooCommerce store and validates credentials. |
+| `store_connect` | Connects, lists, disconnects, or syncs a Shopify/WooCommerce store (`action: "connect" \| "list" \| "disconnect" \| "sync"`) and validates credentials. |
+| `store_demo_seed` | Creates a realistic demo store (20 products, 40 customers, 150+ orders) so you can explore every tool without real store credentials. |
 | `inventory_status` | Returns current stock levels, back-order flags and low-stock alerts. |
 | `inventory_forecast` | Projects future inventory requirements using moving-average demand and safety-stock buffers. |
 | `pricing_analyze` | Generates a price elasticity report and identifies under-/over-priced SKUs. |
@@ -67,36 +68,46 @@ The server will read the environment variables, connect to the configured store(
 
 | Resource | Description |
 |----------|-------------|
-| `store://overview` | High-level store metrics: total sales, orders, customers, and gross margin. |
-| `store://inventory` | Full inventory catalogue with quantity on hand, reserved stock and forecasted shortages. |
-| `store://orders/recent` | List of the most recent 100 orders with status, total value and payment method. |
-| `store://customers/top` | Top 50 customers ranked by lifetime value, purchase frequency and recency. |
+| `store://overview` | High-level store metrics: product, order, and customer counts per connected store. |
+| `store://inventory` | Low-stock alerts: active products with on-hand quantity ≤ 10, sorted lowest first. |
+| `store://orders/recent` | The 20 most recent orders across all stores, with order number, total, status and date. |
+| `store://customers/top` | Top 20 customers by total spending, with name, email and order count. |
 
 ---
 
 ## Configuration
 
-Create a `.env` file at the project root. The following variables are required:
+ShopOps reads only a handful of environment variables. **Store credentials are not env vars** —
+they are passed to the `store_connect` tool at runtime (one connection per store), so the same
+server process can manage multiple Shopify/WooCommerce stores.
 
-| Variable | Required for | Description |
-|----------|--------------|-------------|
-| `SHOPIFY_API_KEY` | Shopify | Private app API key. |
-| `SHOPIFY_API_PASSWORD` | Shopify | Private app password. |
-| `SHOPIFY_STORE_DOMAIN` | Shopify | Store domain (e.g., `myshop.myshopify.com`). |
-| `WOOCOMMERCE_CONSUMER_KEY` | WooCommerce | REST API consumer key. |
-| `WOOCOMMERCE_CONSUMER_SECRET` | WooCommerce | REST API consumer secret. |
-| `WOOCOMMERCE_STORE_URL` | WooCommerce | Store URL (e.g., `https://example.com`). |
-| `MCP_PORT` | HTTP transport | Port for the Streamable HTTP endpoint (default `8080`). |
-| `MCP_LOG_LEVEL` | All | Logging verbosity (`error`, `warn`, `info`, `debug`). |
-| `MCP_PRICING_MODEL` | Pricing tools | Pricing strategy (`margin_based`). |
-| `MCP_FORECAST_WINDOW_DAYS` | Inventory forecast | Number of days to forecast (default `30`). |
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `PORT` | No | If set (or `MCPIZE=true`), the server runs as a Streamable HTTP endpoint on this port (default `8080`) instead of local `stdio`. |
+| `MCPIZE` | No | Set to `true` by the MCPize runtime to force HTTP transport. |
+| `LEMONSQUEEZY_LICENSE_KEY` | No | Pro license key. Without it the server runs in Free tier (see [Pro License](#pro-license)). |
 
-Optional variables:
+A minimal `.env` is provided in [`.env.example`](.env.example).
 
-| Variable | Description |
-|----------|-------------|
-| `MCP_ENABLE_ANONYMIZATION` | When set to `true`, personally identifiable data is masked in reports. |
-| `MCP_REPORT_S3_BUCKET` | If provided, daily/weekly reports are uploaded to the specified S3 bucket. |
+### Connecting a store
+
+Shopify and WooCommerce credentials are supplied as parameters to `store_connect`, e.g.:
+
+```jsonc
+// Shopify
+{ "action": "connect", "platform": "shopify",
+  "store_domain": "myshop.myshopify.com", "access_token": "shpat_..." }
+
+// WooCommerce
+{ "action": "connect", "platform": "woocommerce",
+  "store_url": "https://example.com", "consumer_key": "ck_...", "consumer_secret": "cs_..." }
+```
+
+`store_connect` returns a `store_id` that every other tool takes as input. To explore the server
+without real credentials, call `store_demo_seed` instead.
+
+> **Roadmap (not yet implemented):** report anonymization, S3 report export, and a configurable
+> pricing-model / log-level are planned but not read by the current release.
 
 ---
 

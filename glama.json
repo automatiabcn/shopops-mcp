@@ -6,11 +6,11 @@
   "tools": {
     "store_connect": {
       "enabled": true,
-      "description": "Connect a Shopify (Admin API token + store domain) or WooCommerce (consumer key/secret + base URL) store. Validates credentials with a ping request. Returns the connection id used by all other tools."
+      "description": "Connect, list, disconnect, or sync a Shopify (Admin API token + store domain) or WooCommerce (consumer key/secret + base URL) store via the `action` parameter. action=\"connect\" validates credentials with a ping and returns the store id used by all other tools; action=\"sync\" refreshes inventory, orders, customers, and products from the connected store."
     },
-    "store_sync": {
+    "store_demo_seed": {
       "enabled": true,
-      "description": "Refresh inventory, orders, customers, and products from the connected store. Respects platform rate limits (Shopify 2req/s, WooCommerce unlimited). Returns per-entity counts and last_synced_at."
+      "description": "Create a realistic demo store (20 products, 40 customers across 6 archetype buckets, 150+ orders over the last 6 months) so every tool returns meaningful output without real Shopify or WooCommerce credentials. Returns the store id plus entity counts."
     },
     "inventory_status": {
       "enabled": true,
