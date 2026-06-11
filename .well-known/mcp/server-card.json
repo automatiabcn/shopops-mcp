@@ -2,11 +2,12 @@
   "name": "shopops-mcp",
   "displayName": "ShopOps MCP",
   "description": "AI e-commerce operations manager for Shopify and WooCommerce. Moving-average demand forecasting with safety stock, margin-based pricing optimization, RFM 7-segment customer analysis, fraud/anomaly detection, ABC product performance, automated daily/weekly reports. 12 tools, 4 resources, 3 prompts.",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "license": "MIT",
   "repository": "https://github.com/enzoemir1/shopops-mcp",
   "tools": [
-    { "name": "store_connect", "description": "Connect Shopify (Admin API token) or WooCommerce (consumer key + secret)" },
+    { "name": "store_connect", "description": "Connect, list, disconnect, or sync a Shopify (Admin API token) or WooCommerce (consumer key + secret) store" },
+    { "name": "store_demo_seed", "description": "Create a realistic demo store (20 products, 40 customers, 150+ orders) to explore the server without real credentials" },
     { "name": "inventory_status", "description": "Current stock levels, low-stock alerts, back-order flags" },
     { "name": "inventory_forecast", "description": "Moving-average demand projection with safety-stock buffer" },
     { "name": "pricing_analyze", "description": "Price elasticity report, under/over-priced SKU detection" },
@@ -16,13 +17,12 @@
     { "name": "order_anomalies", "description": "Pattern-based fraud/anomaly detection" },
     { "name": "product_performance", "description": "ABC/Pareto analysis with contribution metrics per class" },
     { "name": "report_daily", "description": "JSON/CSV daily operations summary" },
-    { "name": "report_weekly", "description": "Weekly performance report with trend visualisation data" },
-    { "name": "store_sync", "description": "Refresh inventory, orders, customers from connected store" }
+    { "name": "report_weekly", "description": "Weekly performance report with trend visualisation data" }
   ],
   "resources": [
-    { "uri": "store://overview", "description": "Sales, orders, customers, gross margin high-level metrics" },
-    { "uri": "store://inventory", "description": "Full catalogue with quantity-on-hand, reserved, forecasted shortages" },
-    { "uri": "store://orders/recent", "description": "100 most recent orders with status, total, payment method" },
-    { "uri": "store://customers/top", "description": "Top 50 customers by LTV, frequency, recency" }
+    { "uri": "store://overview", "description": "Per-store product, order, and customer counts" },
+    { "uri": "store://inventory", "description": "Low-stock alerts: active products with on-hand quantity <= 10" },
+    { "uri": "store://orders/recent", "description": "20 most recent orders with status, total, date" },
+    { "uri": "store://customers/top", "description": "Top 20 customers by total spending" }
   ]
 }
