@@ -41,8 +41,9 @@ export async function analyzePricing(storeId: string, productId?: string): Promi
     const avgUnitsPerDay = unitsSold / 30;
     const revenuePerDay = revenue / 30;
 
-    // Margin calculation
-    const marginPercent = product.cost_price !== null && product.cost_price > 0
+    // Margin calculation — guard product.price > 0 too, otherwise a free/zero-
+    // priced product divides by zero and yields ±Infinity.
+    const marginPercent = product.cost_price !== null && product.cost_price > 0 && product.price > 0
       ? Math.round(((product.price - product.cost_price) / product.price) * 10000) / 100
       : null;
 
