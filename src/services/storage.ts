@@ -1,4 +1,4 @@
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, rename } from 'node:fs/promises';
 import { join, basename } from 'node:path';
 import type { StoreConfig, Product, Order, Customer } from '../models/store.js';
 
@@ -65,7 +65,12 @@ export class Storage {
     await this.lock.acquire();
     try {
       await mkdir(this.dataDir, { recursive: true });
-      await writeFile(this.filePath(name), JSON.stringify(data, null, 2), 'utf-8');
+      // Atomic write: temp file + rename, so a crash mid-write can't corrupt the
+      // existing JSON store.
+      const target = this.filePath(name);
+      const tmp = `${target}.tmp`;
+      await writeFile(tmp, JSON.stringify(data, null, 2), 'utf-8');
+      await rename(tmp, target);
     } finally {
       this.lock.release();
     }
