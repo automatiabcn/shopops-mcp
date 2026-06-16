@@ -5,7 +5,10 @@ import type { Order } from '../../src/models/store.js';
 const storeId = 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
 
 function makeOrder(id: string, total: number, daysAgo: number, overrides: Partial<Order> = {}): Order {
+  // Anchor to noon UTC so the off-hours check (00:00–05:00 UTC) is never
+  // triggered by chance — otherwise this suite fails when CI runs at night.
   const date = new Date(Date.now() - daysAgo * 86400000);
+  date.setUTCHours(12, 0, 0, 0);
   return {
     id, store_id: storeId, external_id: id, order_number: `#${id}`,
     customer_id: `c_${id}`, customer_email: `${id}@test.com`,
