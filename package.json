@@ -18,15 +18,25 @@
     "inspect": "npx @modelcontextprotocol/inspector npx tsx src/index.ts"
   },
   "keywords": [
-    "mcp", "ecommerce", "shopify", "woocommerce", "inventory",
-    "forecasting", "pricing", "rfm", "segmentation", "ai",
-    "fraud-detection", "analytics", "operations"
+    "mcp",
+    "ecommerce",
+    "shopify",
+    "woocommerce",
+    "inventory",
+    "forecasting",
+    "pricing",
+    "rfm",
+    "segmentation",
+    "ai",
+    "fraud-detection",
+    "analytics",
+    "operations"
   ],
   "author": "Automatia BCN",
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.2",
     "zod": "^4.3.6"
   },
   "devDependencies": {
